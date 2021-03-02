@@ -1,10 +1,39 @@
-const express = require('express');
+const nodemailer = require('nodemailer');
 
-const app = express();
+nodemailer.createTestAccount((err, account) => {
+  if (err) {
+    console.error('Failed to create a testing account.');
+    console.error(err.message);
+    return process.exit(1);
+  }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+  console.log('Credentials obtained, sending message...');
 
-app.listen(3000, () => {
-  console.log('Email sender server listening at 3000 port.');
+  const transporter = nodemailer.createTransport({
+    host: account.smtp.host,
+    port: account.smtp.post,
+    secure: account.smtp.secure,
+    auth: {
+      user: account.user,
+      pass: account.pass
+    }
+  });
+
+  const message = {
+    from: "noreply <noreply@email.com>",
+    to: "MinJun Seo <minjunseo@email.com>",
+    subject: "Test",
+    text: "Hello to myself!",
+    html: "<p><b>Grave</b> for me!</p>"
+  };
+
+  transporter.sendMail(message, (err, info) => {
+    if (err) {
+      console.error('Failed to send a email.');
+      console.error(err.message);
+    }
+
+    console.log(`Message sent: ${info.messageId}`);
+    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+  });
 });
