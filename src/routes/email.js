@@ -3,7 +3,7 @@ const { TryCatchMiddleware } = require('../middlewares');
 const { EmailController } = require('../controllers');
 
 router.get(
-  '/email',
+  '/',
   TryCatchMiddleware.Error(EmailController.sendEmail)
 );
 
