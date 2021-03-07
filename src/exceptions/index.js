@@ -1,5 +1,6 @@
 const HttpError = require('./httpError');
 
 module.exports = {
-  ApiNotFound: new HttpError(404, "Api Not Found")
+  BadRequest: new HttpError(400, "Bad Request"),
+  ApiNotFound: new HttpError(404, "Api Not Found"),
 };
