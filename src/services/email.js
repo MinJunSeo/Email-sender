@@ -1,6 +1,6 @@
-const { sendEmail } = require('../configs/server');
-const transporter = require('../repositories');
-const makeUuid = require('../utils');
+const { config } = require('../configs');
+const { transporter } = require('../repositories');
+const { makeUuid } = require('../utils');
 
 class EmailService {
   constructor() {
@@ -10,11 +10,11 @@ class EmailService {
   async sendEmail(req) {
     try {
       const info = await transporter.sendMail({
-        from: `noreply ${sendEmail}`,
-        to: `${req.body.name} <${req.body.receiveEmail}>`,
+        from: `noreply <${config.sender.email}>`,
+        to: `${req.body.receiver.name} <${req.body.receiver.email}>`,
         subject: 'Please verify your device',
         html: `
-        <p>Hi, ${req.body.name}!</p>
+        <p>Hi, ${req.body.receiver.name}!</p>
         <p>A sing in attempt requires further verfication \
         because we did not recognize your device.</p>
         <p>Verfication code: ${makeUuid()}</p>
