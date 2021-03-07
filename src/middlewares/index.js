@@ -1,5 +1,5 @@
-const handler = require('./handler');
+const TryCatchMiddleware = require('./handler');
 
 module.exports = {
-  handler
+  TryCatchMiddleware
 };
