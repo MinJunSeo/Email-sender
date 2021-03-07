@@ -1,39 +1,20 @@
-const nodemailer = require('nodemailer');
+const express = require('express');
 
-nodemailer.createTestAccount((err, account) => {
-  if (err) {
-    console.error('Failed to create a testing account.');
-    console.error(err.message);
-    return process.exit(1);
-  }
+const app = express();
+const { config } = require('./configs');
+const { ApiNotFound } = require('./exceptions');
 
-  console.log('Credentials obtained, sending message...');
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-  const transporter = nodemailer.createTransport({
-    host: account.smtp.host,
-    port: account.smtp.post,
-    secure: account.smtp.secure,
-    auth: {
-      user: account.user,
-      pass: account.pass
-    }
-  });
+app.use((req, res, next) => {
+  next(ApiNotFound);
+});
 
-  const message = {
-    from: "noreply <noreply@email.com>",
-    to: "MinJun Seo <minjunseo@email.com>",
-    subject: "Test",
-    text: "Hello to myself!",
-    html: "<p><b>Grave</b> for me!</p>"
-  };
+app.use((err, req, res, next) => {
+  console.error(`${err.status}: ${err.message}`);
+});
 
-  transporter.sendMail(message, (err, info) => {
-    if (err) {
-      console.error('Failed to send a email.');
-      console.error(err.message);
-    }
-
-    console.log(`Message sent: ${info.messageId}`);
-    console.log(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
-  });
+app.listen(config.server.port, () => {
+  console.log(`Email sender server listening at ${config.server.port}.`);
 });
