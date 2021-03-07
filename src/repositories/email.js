@@ -1,13 +1,13 @@
 const nodemailer = require('nodemailer');
-const { senderEmail, senderPassword } = require('../configs/email');
+const { config } = require('../configs');
 
 const transporter = nodemailer.createTransport({
   service: 'naver',
   host: 'smtp.naver.com',
   secure: true,
   auth: {
-    user: senderEmail,
-    pass: senderPassword
+    user: config.sender.email,
+    pass: config.sender.password
   }
 });
 
